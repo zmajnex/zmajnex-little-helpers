@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax and PHP forms</title>
+</head>
+
+<body>
+    <!--Get form-->
+    <h3>Get form:</h3>
+    <form id="get-form" method="GET" action="proces.php">
+        <input type="text" placeholder="Enter your name" name="name" id="get-input">
+        <button id='get-btn' type="submit" value="Submit">Submit</button>
+    </form>
+    <br>
+    <div id="get-div"></div>
+    <br>
+    <br>
+    <!--Post form-->
+    <h3>Post form:</h3>
+    <form id="post-form" method="POST" action="proces.php">
+        <input type="text" placeholder="Enter your name" id="post-input" name="name2">
+        <button id='post-btn' type="submit" value="Submit">Submit</button>
+    </form>
+    <br>
+    <div id="post-div"></div>
+</body>
+<script>
+    /*
+    * This script is sending variables from forms to php, in this case process.php
+      There are two forms, one with GET method and the other with POST method.The goal
+      of this script is to send data, store them to db, etc without redirecting us from
+      this page.
+     */
+    //GET method
+    //Collect data from url
+    document.getElementById('get-form').addEventListener('submit', showName);
+    document.getElementById('post-form').addEventListener('submit', showNamePost);
+    function showName(e) {
+        /* preventDefault() is canceling the default action, in this case after we hit submit button 
+           it will redirect us to process.php. We want to send request trough Ajax 
+           and not to be redirected from page,thats why we use preventDefault()
+        */
+        e.preventDefault();
+        var name = document.getElementById('get-input').value;
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'proces.php?name=' + name, true)
+        xhr.onload = function () {
+            console.log(this.responseText);
+        }
+        xhr.send();
+    }
+    //POST method
+    function showNamePost(e) {
+        e.preventDefault();
+        var name2 = document.getElementById('post-input').value;
+        //The params is varibale that store data, and  that data is sent trough send() method
+        var params = "name=" + name2;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'proces.php', true)
+        //Sending varibales trough header
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            console.log(this.responseText);
+        }
+        xhr.send(params);
+    }
+</script>
+
+</html>
