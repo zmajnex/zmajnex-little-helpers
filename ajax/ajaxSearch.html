@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <title>Ajax serach</title>
+    <style>
+        #result {
+            position: absolute;
+            width: 100%;
+            max-width: 870px;
+            cursor: pointer;
+            overflow-y: auto;
+            max-height: 400px;
+            box-sizing: border-box;
+            z-index: 1001;
+        }
+
+        .link-class:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center text-primary">Page Live search</h1>
+        <p class="text-center ">Search top rated movies from json file</p>
+        <!-- Bootstrap JavaScript and Jquery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+        <!-- Search script-->
+
+        <div class="container-fluid" style="width:900px;">
+            <div align="center">
+                <input type="text" name="search" id="search" placeholder="Search Movies..." class="form-control" />
+            </div>
+            <ul class="list-group" id="result"></ul>
+        </div>
+        <script>
+            $(document).ready(function () {
+                $.ajaxSetup({ cache: false });
+                $('#search').keyup(function () {
+                    //Clear html code with tag result
+                    $('#result').html(' ');
+                    $('#state').val('');
+                    //Get the value from input field
+                    var searchField = $('#search').val();
+                    //The RegExp constructor creates a regular expression object 
+                    //for matching text with a pattern and "i" stands for ignore case 
+                    var expression = new RegExp(searchField, "i");
+                    //Get data from json file
+                    $.getJSON('movies.json', function (data) {
+                        //Loop data one by one
+                        $.each(data, function (key, value) {
+                            if (value.title.search(expression) != -1 || value.rank.search(expression) != -1) {
+                                //Apend results and wrap it in html 
+                                $('#result').append('<a href="#"><li class="list-group-item"><span>' + value.title + '</span><span> ' + value.rank + '</span></li></a>');
+                            }
+                        });
+                    });
+                });
+                //After we click on result it will be displayed in search box 
+                //and  other results will be cleared
+                $('#result').on('click', 'li', function () {
+                    var click_text = $(this).text().split('|');
+                    $('#search').val($.trim(click_text[0]));
+                    $("#result").html('');
+                });
+            });
+
+        </script>
+</body>
+
+</html>
